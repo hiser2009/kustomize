@@ -24,13 +24,11 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
           
-      - name: Verify Rancher Connection
+      - name: Verify Rancher Connection and Get Nodes
         run: |
-          docker run -v $HOME/.kube:/root/.kube -it --rm \
+          docker run -v $HOME/.kube:/root/.kube --rm \
             -e RANCHER_URL=https://192.168.1.230/ \
             -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
             -e RANCHER_SECRET_KEY=${{ secrets.RANCHER_SECRET_KEY }} \
             rancher/rancher-cli:v2.4.10 \
-            rancher context switch local
-          
-          kubectl get nodes
+            rancher context switch local && kubectl get nodes
