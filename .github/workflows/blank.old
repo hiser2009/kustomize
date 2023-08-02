@@ -1,0 +1,70 @@
+# This is a basic workflow to help you get started with Actions
+
+name: K8S-Play
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  # build:
+  #   # The type of runner that the job will run on
+  #   runs-on: ubuntu-latest
+
+  #   # Steps represent a sequence of tasks that will be executed as part of the job
+  #   steps:
+  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+  #     - uses: actions/checkout@v2
+
+  #     # Runs a single command using the runners shell
+  #     - name: Run a one-line script
+  #       run: echo Hello, world!
+  #     - uses: docker://ghcr.io/yannh/kubeconform:master
+  #       with:
+  #         entrypoint: '/kubeconform'
+  #         args: "-summary -output json kubeconfigs/"
+  #     # Runs a set of commands using the runners shell
+  #     - name: Run a multi-line script
+  #       run: |
+  #         echo Add other actions to build,
+  #         echo test, and deploy your project.
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Install kubectl
+        run: |
+          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+      - name: Install Rancher CLI
+        run: |
+          # Download and install Rancher CLI
+          curl -LO "https://github.com/rancher/cli/releases/download/v2.4.9/rancher-linux-amd64"
+          chmod +x rancher-linux-amd64
+          sudo mv rancher-linux-amd64 /usr/local/bin/rancher    
+      - name: Login to Rancher
+        run: |
+          # Set environment variables for Rancher access
+          export RANCHER_ACCESS_KEY=$RANCHER_ACCESS_KEY
+          export RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY
+          # Authenticate with Rancher
+          # rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          bash /usr/local/bin/rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          # Set kubectl context
+          # Set kubectl context
+          kubectl config use-context local
+      - name: Deploy to Rancher
+        run: |
+          kubectl apply -f base/deployment.yaml --kubeconfig ~/.kube/config
+          # You can also add any other deployment-related commands here
