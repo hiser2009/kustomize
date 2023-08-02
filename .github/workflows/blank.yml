@@ -33,8 +33,9 @@ jobs:
           
       - name: Verify Rancher Connection
         run: |
-          # Authenticate with Rancher
+          # Authenticate with Rancher using API tokens
           rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
           
           # Verify connection by getting cluster information
+          rancher context switch local
           kubectl get nodes
