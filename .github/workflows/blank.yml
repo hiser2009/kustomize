@@ -50,7 +50,7 @@ jobs:
       - name: Configure kubectl
         run: |
           # Set kubectl context to your local Rancher cluster
-          # kubectl config use-context $KUBE_CONTEXT 
+          kubectl config use-context $KUBE_CONTEXT 
           echo "KUBE_CONTEXT value: $KUBE_CONTEXT"
       - name: Deploy to Rancher
         run: |
