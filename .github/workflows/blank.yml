@@ -22,16 +22,20 @@ jobs:
       - name: Install Rancher CLI
         run: |
           # Download and install Rancher CLI
-          curl -LO "https://github.com/rancher/cli/releases/download/v2.4.9/rancher-linux-amd64"
+          curl -LO "https://github.com/rancher/cli/releases/download/v2.6.11/rancher-linux-amd64"
           chmod +x rancher-linux-amd64
           sudo mv rancher-linux-amd64 /usr/local/bin/rancher  
+      - name: Set PATH
+        run: |
+          echo "PATH=$PATH:/usr/local/bin" >> $GITHUB_ENV
       - name: Verify Rancher Connection
         run: |
           # Set environment variables for Rancher access
           export RANCHER_ACCESS_KEY=$RANCHER_ACCESS_KEY
           export RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY
           # Authenticate with Rancher
-          rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          #   rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          bash /usr/local/bin/rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
           
           # Verify connection by getting cluster information
           kubectl get nodes
