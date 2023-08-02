@@ -10,6 +10,10 @@ jobs:
   verify-connection:
     runs-on: ubuntu-latest
     
+    env:
+      RANCHER_ACCESS_KEY: ${{ secrets.RANCHER_ACCESS_KEY }}
+      RANCHER_SECRET_KEY: ${{ secrets.RANCHER_SECRET_KEY }}
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -19,23 +23,18 @@ jobs:
           curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
+          
       - name: Install Rancher CLI
         run: |
           # Download and install Rancher CLI
           curl -LO "https://github.com/rancher/cli/releases/download/v2.6.11/rancher-linux-amd64"
           chmod +x rancher-linux-amd64
           sudo mv rancher-linux-amd64 /usr/local/bin/rancher  
-      - name: Set PATH
-        run: |
-          echo "PATH=$PATH:/usr/local/bin" >> $GITHUB_ENV
+          
       - name: Verify Rancher Connection
         run: |
-          # Set environment variables for Rancher access
-          export RANCHER_ACCESS_KEY=$RANCHER_ACCESS_KEY
-          export RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY
           # Authenticate with Rancher
-          #   rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
-          bash /usr/local/bin/rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
           
           # Verify connection by getting cluster information
           kubectl get nodes
