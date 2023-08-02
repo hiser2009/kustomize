@@ -24,18 +24,21 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
           
-      - name: Install Rancher CLI
-        run: |
-          # Download and install Rancher CLI
-          curl -LO "https://github.com/rancher/cli/releases/download/v2.6.11/rancher-linux-amd64"
-          chmod +x rancher-linux-amd64
-          sudo mv rancher-linux-amd64 /usr/local/bin/rancher  
-          
       - name: Verify Rancher Connection
         run: |
-          # Authenticate with Rancher using API tokens
-          rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          # Run Rancher CLI in a Docker container
+          docker run -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
+                     -e RANCHER_SECRET_KEY=${{ secrets.RANCHER_SECRET_KEY }} \
+                     rancher/cli:v2.6.11 \
+                     rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
           
           # Verify connection by getting cluster information
-          rancher context switch local
-          kubectl get nodes
+          docker run -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
+                     -e RANCHER_SECRET_KEY=${{ secrets.RANCHER_SECRET_KEY }} \
+                     rancher/cli:v2.6.11 \
+                     rancher context switch local
+          
+          docker run -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
+                     -e RANCHER_SECRET_KEY=${{ secrets.RANCHER_SECRET_KEY }} \
+                     rancher/cli:v2.6.11 \
+                     kubectl get nodes
