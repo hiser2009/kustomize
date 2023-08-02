@@ -51,7 +51,8 @@ jobs:
         run: |
           # Download and install Rancher CLI
           curl -LO "https://github.com/rancher/cli/releases/download/v2.4.9/rancher-linux-amd64"
-          chmod +x rancher-linux-amd64
+          # chmod +x rancher-linux-amd64
+          chmod +x /usr/local/bin/rancher-linux-amd64
           sudo mv rancher-linux-amd64 /usr/local/bin/rancher    
       - name: Login to Rancher
         run: |
