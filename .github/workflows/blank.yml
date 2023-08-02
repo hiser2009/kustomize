@@ -47,11 +47,15 @@ jobs:
           curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
-      - name: Configure kubectl
+      - name: Login to Rancher
         run: |
-          # Set kubectl context to your local Rancher cluster
+          # Set environment variables for Rancher access
+          export RANCHER_ACCESS_KEY=$RANCHER_ACCESS_KEY
+          export RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY
+          # Authenticate with Rancher
+          rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          # Set kubectl context
           kubectl config use-context local
-          # echo "KUBE_CONTEXT value: $KUBE_CONTEXT"
       - name: Deploy to Rancher
         run: |
           kubectl apply -f base/deployment.yaml --kubeconfig ~/.kube/config
