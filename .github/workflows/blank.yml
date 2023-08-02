@@ -26,6 +26,7 @@ jobs:
           
       - name: Verify Rancher Connection and Get Nodes
         run: |
+          docker --version \
           docker run -v $HOME/.kube:/root/.kube --rm \
             -e RANCHER_URL=https://192.168.1.230/ \
             -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
