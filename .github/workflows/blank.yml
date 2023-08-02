@@ -47,8 +47,11 @@ jobs:
           curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
-          
+      - name: Configure kubectl
+        run: |
+          # Set kubectl context to your local Rancher cluster
+          kubectl config use-context $KUBE_CONTEXT    
       - name: Deploy to Rancher
         run: |
-          kubectl apply -f path/to/your/deployment.yaml
+          kubectl apply -f base/deployment.yaml
           # You can also add any other deployment-related commands here
