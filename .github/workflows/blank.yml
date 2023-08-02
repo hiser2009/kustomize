@@ -26,19 +26,11 @@ jobs:
           
       - name: Verify Rancher Connection
         run: |
-          # Run Rancher CLI in a Docker container
-          docker run -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
-                     -e RANCHER_SECRET_KEY=${{ secrets.RANCHER_SECRET_KEY }} \
-                     rancher/cli:v2.6.11 \
-                     rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          docker run -v $HOME/.kube:/root/.kube -it --rm \
+            -e RANCHER_URL=https://192.168.1.230/ \
+            -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
+            -e RANCHER_SECRET_KEY=${{ secrets.RANCHER_SECRET_KEY }} \
+            rancher/rancher-cli:v2.4.10 \
+            rancher context switch local
           
-          # Verify connection by getting cluster information
-          docker run -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
-                     -e RANCHER_SECRET_KEY=${{ secrets.RANCHER_SECRET_KEY }} \
-                     rancher/cli:v2.6.11 \
-                     rancher context switch local
-          
-          docker run -e RANCHER_ACCESS_KEY=${{ secrets.RANCHER_ACCESS_KEY }} \
-                     -e RANCHER_SECRET_KEY=${{ secrets.RANCHER_SECRET_KEY }} \
-                     rancher/cli:v2.6.11 \
-                     kubectl get nodes
+          kubectl get nodes
