@@ -59,7 +59,11 @@ jobs:
           export RANCHER_ACCESS_KEY=$RANCHER_ACCESS_KEY
           export RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY
           # Authenticate with Rancher
-          rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          # rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          bash /usr/local/bin/rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          # Authenticate with Rancher directly
+          /usr/local/bin/rancher login --token $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY https://192.168.1.230/
+          # Set kubectl context
           # Set kubectl context
           kubectl config use-context local
       - name: Deploy to Rancher
