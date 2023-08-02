@@ -54,5 +54,5 @@ jobs:
           # echo "KUBE_CONTEXT value: $KUBE_CONTEXT"
       - name: Deploy to Rancher
         run: |
-          kubectl apply -f base/deployment.yaml
+          kubectl apply -f base/deployment.yaml --kubeconfig ~/.kube/config
           # You can also add any other deployment-related commands here
