@@ -5,12 +5,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      run: my-nginx
+      run: nginx
   replicas: 2
   template:
     metadata:
       labels:
-        run: my-nginx
+        run: nginx
 
 
 
